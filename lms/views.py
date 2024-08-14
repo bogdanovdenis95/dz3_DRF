@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
-from users.permissions import IsModerator, CanViewAndEditOnly, IsOwner, NotModerator
+from users.permissions import IsModerator, IsOwner, NotModerator
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
