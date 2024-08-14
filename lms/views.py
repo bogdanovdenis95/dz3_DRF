@@ -37,16 +37,16 @@ class LessonListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == 'POST':
-            return [IsAuthenticated(), NotModerator()]
-        return [IsAuthenticated()]
+            return [IsAuthenticated(), NotModerator()]  # Обычные пользователи могут создавать
+        return [IsAuthenticated()]  # Модераторы и обычные пользователи могут просматривать
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
         if self.request.user.groups.filter(name='Модераторы').exists():
-            return Lesson.objects.all()
-        return Lesson.objects.filter(owner=self.request.user)
+            return Lesson.objects.all()  # Модераторы видят все уроки
+        return Lesson.objects.filter(owner=self.request.user)  # Обычные пользователи видят только свои уроки
 
 class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
@@ -55,15 +55,15 @@ class LessonRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def get_permissions(self):
         if self.request.method in ['GET', 'PUT', 'PATCH']:
             if self.request.user.groups.filter(name='Модераторы').exists():
-                return [IsAuthenticated(), IsModerator()]
-            return [IsAuthenticated(), IsOwner()]
+                return [IsAuthenticated(), IsModerator()]  # Модераторы могут просматривать и редактировать
+            return [IsAuthenticated(), IsOwner()]  # Обычные пользователи могут редактировать только свои уроки
         elif self.request.method == 'DELETE':
             if self.request.user.groups.filter(name='Модераторы').exists():
-                return [IsAuthenticated(), NotModerator()]
-            return [IsAuthenticated(), IsOwner()]
+                return [IsAuthenticated(), NotModerator()]  # Модераторы не могут удалять
+            return [IsAuthenticated(), IsOwner()]  # Обычные пользователи могут удалять только свои уроки
         return [IsAuthenticated()]
-    
+
     def get_queryset(self):
         if self.request.user.groups.filter(name='Модераторы').exists():
-            return Lesson.objects.all()
-        return Lesson.objects.filter(owner=self.request.user)
+            return Lesson.objects.all()  # Модераторы видят все уроки
+        return Lesson.objects.filter(owner=self.request.user)  # Обычные пользователи видят только свои уроки
