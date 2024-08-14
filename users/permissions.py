@@ -6,4 +6,4 @@ class IsModerator(BasePermission):
 
 class CanViewAndEditOnly(BasePermission):
     def has_permission(self, request, view):
-        return request.method in SAFE_METHODS or request.method in ['PUT', 'PATCH']
+        return request.method in SAFE_METHODS or request.method in ['PUT', 'PATCH', 'GET']
